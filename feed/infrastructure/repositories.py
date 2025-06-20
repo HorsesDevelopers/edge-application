@@ -13,7 +13,7 @@ class FeedEventRepository:
         )
         return FeedEvent(
             feed_record.device_id,
-            feed_record.bpm,
-            feed_record.created_at,
+            feed_record.dispensed_at,
+            feed_record.duration,
             event.id
         )
