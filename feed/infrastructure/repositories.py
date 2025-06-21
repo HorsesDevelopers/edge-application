@@ -5,15 +5,14 @@ class FeedEventRepository:
 
     @staticmethod
     def save(feed_record) -> FeedEvent:
-
         event = FeedEventModel.create(
             device_id   = feed_record.device_id,
             dispensed_at = feed_record.dispensed_at,
             duration    = feed_record.duration
         )
         return FeedEvent(
+            event.id,
             feed_record.device_id,
             feed_record.dispensed_at,
-            feed_record.duration,
-            event.id
+            feed_record.duration
         )

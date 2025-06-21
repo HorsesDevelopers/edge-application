@@ -5,9 +5,9 @@ class FeedEvent(Model):
 
     id = AutoField()
     device_id = CharField()
-    duration = FloatField()
     dispensed_at = DateTimeField()
+    duration = FloatField()
 
     class Meta:
         database = db
-        table_name = 'health_records'
+        table_name = 'feed_events'
