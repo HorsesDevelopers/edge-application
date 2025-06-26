@@ -11,8 +11,8 @@ class FeedEventRepository:
             duration    = feed_record.duration
         )
         return FeedEvent(
-            event.id,
             feed_record.device_id,
             feed_record.dispensed_at,
-            feed_record.duration
+            feed_record.duration,
+            event.id
         )
