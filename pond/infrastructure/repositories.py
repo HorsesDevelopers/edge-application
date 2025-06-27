@@ -1,5 +1,6 @@
 from pond.domain.entities import PondRecord
 from pond.infrastructure.models import PondRecord as PondRecordModel
+from datetime import datetime
 
 class PondRecordRepository:
     @staticmethod
@@ -10,6 +11,9 @@ class PondRecordRepository:
             value       = pond_record.value,
             created_at  = pond_record.created_at
         )
+        created_at = record.created_at
+        if isinstance(created_at, str):
+            created_at = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
         return PondRecord(
             id          = record.id,
             device_id   = record.device_id,

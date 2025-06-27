@@ -1,7 +1,9 @@
 from flask import Blueprint, request, jsonify
 from pond.application.services import PondRecordApplicationService
 from iam.interfaces.services import authenticate_request
-
+from datetime import datetime, timedelta, timezone
+from pond.infrastructure.models import PondRecord as PondRecordModel
+from dateutil.parser import parse
 pond_api = Blueprint("pond_api", __name__)
 
 health_record_service = PondRecordApplicationService()
@@ -36,3 +38,16 @@ def create_health_record():
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
+@pond_api.route("/api/v1/pond-monitoring/data-records/recent", methods=["GET"])
+def get_recent_pond_records():
+    since = datetime.now(timezone.utc) - timedelta(minutes=10)
+    records = PondRecordModel.select().where(PondRecordModel.created_at >= since)
+    return jsonify([
+        {
+            "id": r.id,
+            "device_id": r.device_id,
+            "record_type": r.record_type,
+            "value": r.value,
+            "created_at": parse(r.created_at).isoformat() + "Z" if isinstance(r.created_at, str) else r.created_at.isoformat() + "Z"
+        } for r in records
+    ])
