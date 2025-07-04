@@ -14,6 +14,12 @@ feed_event_service = FeedEventApplicationService()
 
 @feed_api.route("/api/v1/feed-deployment/data-events", methods=["POST"])
 def create_feed_event():
+    """
+    Endpoint to create a new feed event.
+    Expects device ID, dispensed_at timestamp, and duration in the request body.
+    Requires a valid API key in the headers.
+    Returns the created feed event or an error message.
+    """
     auth_result = authenticate_request()
     if auth_result:
         return auth_result
@@ -41,6 +47,10 @@ def create_feed_event():
 
 @feed_api.route("/api/v1/feed-deployment/data-events/recent", methods=["GET"])
 def get_recent_feed_events():
+    """
+    Endpoint to retrieve recent feed events from the last 10 minutes.
+    Returns a list of feed events with their details.
+    """
     since = datetime.now(timezone.utc) - timedelta(minutes=10)
     events = FeedEventModel.select().where(FeedEventModel.dispensed_at >= since)
     return jsonify([
@@ -54,6 +64,12 @@ def get_recent_feed_events():
 
 @pond_api.route("/api/v1/pond-monitoring/data-records", methods=["POST"])
 def create_health_record():
+    """
+    Endpoint to create a new pond sensor record.
+    Expects device ID, record type, value, and optional created_at timestamp in the request body.
+    Requires a valid API key in the headers.
+    Returns the created pond record or an error message.
+    """
     auth_result = authenticate_request()
     if auth_result:
         return auth_result
@@ -84,6 +100,10 @@ def create_health_record():
 
 @pond_api.route("/api/v1/pond-monitoring/data-records/recent", methods=["GET"])
 def get_recent_pond_records():
+    """
+    Endpoint to retrieve recent pond sensor records from the last 10 minutes.
+    Returns a list of pond records with their details.
+    """
     since = datetime.now(timezone.utc) - timedelta(minutes=10)
     records = PondRecordModel.select().where(PondRecordModel.created_at >= since)
     return jsonify([

@@ -2,9 +2,10 @@ from datetime import timezone, datetime
 from dateutil.parser import parse
 from om.domain.entities import FeedEvent, PondRecord
 
-
-
 class FeedEventService:
+    """
+    Domain service for creating and validating feed events.
+    """
     def __init__(self):
         pass
 
@@ -14,6 +15,10 @@ class FeedEventService:
             dispensed_at: str | None,
             duration: float,
     ) -> FeedEvent:
+        """
+        Creates a FeedEvent entity after validating input data.
+        Ensures duration is within allowed range and parses the timestamp.
+        """
         try:
             duration = float(duration)
             if not (0 <= duration <= 60):
@@ -31,6 +36,9 @@ class FeedEventService:
         )
 
 class PondRecordService:
+    """
+    Domain service for creating and validating pond sensor records.
+    """
     def __init__(self):
         pass
 
@@ -41,7 +49,10 @@ class PondRecordService:
             value: float,
             created_at: str | None
     ) -> PondRecord:
-
+        """
+        Creates a PondRecord entity after validating input data.
+        Parses the value and timestamp.
+        """
         try:
             value = float(value)
             if created_at:

@@ -3,10 +3,13 @@ from om.infrastructure.models import FeedEvent as FeedEventModel
 from om.infrastructure.models import PondRecord as PondRecordModel
 from datetime import datetime
 
+"""Repository for persisting and retrieving FeedEvent entities from the database."""
 class FeedEventRepository:
-
     @staticmethod
     def save(feed_record) -> FeedEvent:
+        """
+        Saves a FeedEvent entity to the database and returns the saved entity with its ID.
+        """
         event = FeedEventModel.create(
             device_id   = feed_record.device_id,
             dispensed_at = feed_record.dispensed_at,
@@ -19,9 +22,13 @@ class FeedEventRepository:
             event.id
         )
 
+"""Repository for persisting and retrieving PondRecord entities from the database."""
 class PondRecordRepository:
     @staticmethod
     def save(pond_record) -> PondRecord:
+        """
+        Saves a PondRecord entity to the database and returns the saved entity with its ID.
+        """
         record = PondRecordModel.create(
             device_id   = pond_record.device_id,
             record_type = pond_record.record_type,
