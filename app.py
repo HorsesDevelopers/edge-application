@@ -1,11 +1,8 @@
 from flask import Flask
 
-import time
-import requests
 import iam.application.services
-from pond.interfaces.services import pond_api
 from iam.interfaces.services import iam_api
-from feed.interfaces.services import feed_api
+from om.interfaces.services import feed_api, pond_api
 
 from shared.infrastructure.database import init_db
 
@@ -40,8 +37,31 @@ def forward_records():
     if pond_records:
         requests.post(spring_url_pond, json=pond_records)
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+import threading
+import time
+import requests
+
+DEVICE_ID = "pond-001"
+DEVICE_URL = "http://192.168.234.242/data"
+FOG_URL = "http://localhost:8080/fog1/v1/edge-data"  # Asegúrate que este endpoint esté activo
+
+def poll_and_forward():
     while True:
-        forward_records()
-        time.sleep(600)  # 10 minutos
+        try:
+            print("Haciendo GET al device...")
+            resp = requests.get(DEVICE_URL, timeout=5)
+            resp.raise_for_status()
+            data = resp.json()
+            data["device_id"] = DEVICE_ID
+            print("Payload a enviar al fog:", data)
+            fog_resp = requests.post(FOG_URL, json=data, timeout=5)
+            print("Respuesta del fog:", fog_resp.status_code, fog_resp.text)
+            fog_resp.raise_for_status()
+            print("Enviado al fog correctamente.")
+        except Exception as e:
+            print("Error en poll_and_forward:", e)
+        time.sleep(10)
+
+if __name__ == "__main__":
+    threading.Thread(target=poll_and_forward, daemon=True).start()
+    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
