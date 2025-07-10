@@ -25,13 +25,15 @@ class PondRecord:
     def __init__(
             self,
             device_id: str,
-            record_type: str,
-            value: float,
+            temp: float,
+            ph: float,
+            turbidity: float,
             created_at: datetime,
-            id: int = None
+            id: int = None,
     ):
-        self.id = id  # Unique identifier for the sensor record (optional)
-        self.device_id = device_id  # ID of the device that sent the record
-        self.record_type = record_type  # Type of sensor data (e.g., temperature, turbidity)
-        self.value = value  # Value measured by the sensor
-        self.created_at = created_at  # Timestamp when the record was created
+        self.id = id
+        self.device_id = device_id
+        self.temp = temp
+        self.ph = ph
+        self.turbidity = turbidity
+        self.created_at = created_at

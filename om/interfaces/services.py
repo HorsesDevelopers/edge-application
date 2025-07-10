@@ -62,13 +62,10 @@ def get_recent_feed_events():
         } for e in events
     ])
 
-@pond_api.route("/api/v1/pond-monitoring/data-records", methods=["POST"])
-def create_health_record():
+@pond_api.route("/api/v1/pond-monitoring/data-records/batch", methods=["POST"])
+def create_pond_records_batch():
     """
-    Endpoint to create a new pond sensor record.
-    Expects device ID, record type, value, and optional created_at timestamp in the request body.
-    Requires a valid API key in the headers.
-    Returns the created pond record or an error message.
+    Receives temp, turbidity and ph together and saves them as separate records.
     """
     auth_result = authenticate_request()
     if auth_result:
@@ -76,25 +73,33 @@ def create_health_record():
     data = request.json
     try:
         device_id = data["device_id"]
-        record_type = data["record_type"]
-        value = data["value"]
         created_at = data.get("created_at")
+        temp = data.get("temp")
+        ph = data.get("ph")
+        turbidity = data.get("turbidity")
+        api_key = request.headers.get("X-API-Key")
+
+        if temp is None or ph is None or turbidity is None:
+            return jsonify({"error": "temp, ph y turbidity son requeridos"}), 400
+
         record = pond_record_service.create_pond_record(
             device_id,
-            record_type,
-            value,
+            temp,
+            ph,
+            turbidity,
             created_at,
-            request.headers.get("X-API-Key")
+            api_key,
         )
         return jsonify({
             "id": record.id,
             "device_id": record.device_id,
-            "record_type": record.record_type,
-            "value": record.value,
+            "temp": record.temp,
+            "ph": record.ph,
+            "turbidity": record.turbidity,
             "created_at": record.created_at.isoformat() + "Z"
         }), 201
     except KeyError:
-        return jsonify({"error": "Missing required fields"}), 400
+        return jsonify({"error": "Missing fields"}), 400
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
