@@ -14,3 +14,14 @@ def authenticate_request() -> None | tuple[Response, int]:
     if not auth_service.authenticate(device_id, api_key):
         return jsonify({"error": "Invalid device_id or API key"}), 401
     return None
+
+@iam_api.route('/devices', methods=['POST'])
+def create_or_update_device():
+    data = request.json
+    device_id = data.get('device_id')
+    api_key = data.get('api_key')
+    if not device_id or not api_key:
+        return jsonify({"error": "device_id y api_key requeridos"}), 400
+
+    device = auth_service.create_or_update_device(device_id, api_key)
+    return jsonify({"device_id": device.device_id, "api_key": device.api_key}), 200
