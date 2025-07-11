@@ -92,7 +92,7 @@ class PondRecordApplicationService:
                 requests.post(
                     "http://localhost:8081/api/v1/ponds_record",
                     json={
-                        "pondId": device_id,
+                        "pondId": 1,
                         "temp": temp,
                         "ph": ph,
                         "turbidity": turbidity

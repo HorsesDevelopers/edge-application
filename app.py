@@ -1,5 +1,6 @@
 from flask import Flask
-
+import threading
+from sdp.interfaces import services
 import iam.application.services
 from iam.interfaces.services import iam_api
 from om.interfaces.services import feed_api, pond_api
@@ -24,4 +25,6 @@ def setup():
         auth_application_service.get_or_create_test_device()
 
 if __name__ == "__main__":
+    mqtt_thread = threading.Thread(target=services.main, daemon=True)
+    mqtt_thread.start()
     app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
