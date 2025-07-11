@@ -18,3 +18,14 @@ class DeviceRepository:
             device_id='pond-001',
             defaults={"api_key": "test-api-key-123", "created_at": "2025-06-06T12:00:00Z"})
         return Device(device.device_id, device.api_key, device.created_at)
+
+    @staticmethod
+    def save(device: Device) -> Device:
+        device_model, _ = DeviceModel.get_or_create(
+            device_id=device.device_id,
+            defaults={"api_key": device.api_key, "created_at": device.created_at}
+        )
+        device_model.api_key = device.api_key
+        device_model.created_at = device.created_at
+        device_model.save()
+        return Device(device_model.device_id, device_model.api_key, device_model.created_at)

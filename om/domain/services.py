@@ -36,33 +36,32 @@ class FeedEventService:
         )
 
 class PondRecordService:
-    """
-    Domain service for creating and validating pond sensor records.
-    """
-    def __init__(self):
-        pass
-
     @staticmethod
     def create_record(
             device_id: str,
-            record_type: str,
-            value: float,
-            created_at: str | None
+            temp: float,
+            ph: float,
+            turbidity: float,
+            created_at: str | None,
     ) -> PondRecord:
         """
         Creates a PondRecord entity after validating input data.
         Parses the value and timestamp.
         """
         try:
-            value = float(value)
+            temp = float(temp)
+            ph = float(ph)
+            turbidity = float(turbidity)
             if created_at:
                 parsed_created_at = parse(created_at).astimezone(timezone.utc)
             else:
                 parsed_created_at = datetime.now(timezone.utc)
         except (ValueError, TypeError):
-            raise ValueError("Invalid input for BPM or created_at.")
+            raise ValueError("Invalid input for temp, ph, turbidity or created_at.")
         return PondRecord(
             device_id,
-            record_type,
-            value,
-            parsed_created_at)
+            temp,
+            ph,
+            turbidity,
+            parsed_created_at
+        )

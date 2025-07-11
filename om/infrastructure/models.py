@@ -21,11 +21,11 @@ class PondRecord(Model):
     ORM model representing a pond sensor record in the database.
     Maps to the 'sensor_records' table.
     """
-
     id = AutoField()
     device_id = CharField()
-    record_type = CharField()
-    value = FloatField()
+    temp = FloatField()
+    ph = FloatField()
+    turbidity = FloatField()
     created_at = DateTimeField()
 
     class Meta:
